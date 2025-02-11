@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Echarts动态三角拓扑网络图</title>
+    <script src="https://cdn.staticfile.org/echarts/5.2.2/echarts.min.js"></script>
+    <style type="text/css">
+        #main {
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+<div id="main"></div>
+<!-- <div><img src="./images/icon/host.png" alt=""></div> -->
+<script type="text/javascript">
+    // 初始化Echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 拓扑图的节点和边数据
+    var nodes = [
+            {
+                id: "h1",
+                name:"h1",
+                category: 0,
+                draggable: true,
+                symbol : 'image://./images/icon/host.png',
+                symbolSize : 50
+            },
+            {
+                id: "h2",
+                name:"h2",
+                category: 0,
+                draggable: true,
+                symbol : 'image://./images/icon/host.png',
+                symbolSize : 50
+            },
+            {
+                id: "h3",
+                name:"h3",
+                category: 0,
+                draggable: true,
+                symbol : 'image://./images/icon/host.png',
+                symbolSize : 50
+            },
+            {
+                id: "s1",
+                name:"s1",
+                category: 1,
+                draggable: true,
+                symbol : 'image://./images/icon/switch.png',
+                symbolSize : 50
+            },
+            {
+                id: "s2",
+                name:"s2",
+                category: 1,
+                draggable: true,
+                symbol : 'image://./images/icon/switch.png',
+                symbolSize : 50
+            },
+            {
+                id: "s3",
+                name:"s3",
+                category: 1,
+                draggable: true,
+                symbol : 'image://./images/icon/switch.png',
+                symbolSize : 50
+            }
+        ];
+
+
+    /**
+     * 自定义图片
+     */
+    //  for (var i = 0;i < data.length;i++){
+    //     if (data[i].category == 0){
+    //         data[i].symbol = 'image://./images/icon/host.png';
+    //         // data[i].symbolSize = 70;
+    //     }
+    //     if (data[i].category == 1){
+    //         data[i].symbol = 'image://./images/icon/switch.png';
+    //     }
+    // }
+
+
+
+    var links = [
+        // s1-h1
+        {source: 's1', target: 'h1'},
+        // {source: 'h1', target: 's1'},
+
+        // s2-h2
+        {source: 's2', target: 'h2'},
+        // {source: 'h2', target: 's2'},
+        
+        // s3-h3
+        {source: 's3', target: 'h3'},
+        // {source: 'h3', target: 's3'},
+
+        // s1-s2
+        {source: 's1', target: 's2'},
+        // {source: 's2', target: 's1'},
+
+        // s2-s3
+        {source: 's2', target: 's3'},
+        // {source: 's3', target: 's2'},
+
+        // s3-s1
+        {source: 's3', target: 's1'},
+        // {source: 's1', target: 's3'}
+    ];
+
+    // 拓扑图节点的类别，用于区分不同类型的节点
+    var categories = [
+        {name: "主机"},
+        {name: "端口"}
+    ];
+    
+
+    // 设置Echarts的option
+    var option = {
+        title: {
+            text: '动态三角拓扑网络图'
+        },
+        tooltip: {},
+        legend: {
+            data: categories.map(function (a) {
+                return a.name;
+            })
+        },
+        series: [{
+            type: 'graph',
+            layout: 'force',
+            data: nodes,
+            links: links,
+            categories: categories,
+            roam: true, // 允许用户缩放和拖拽
+            draggable: true, // 开启节点拖拽
+            focusNodeAdjacency : true,
+            edgeSymbol: ['none', 'none'],
+            edgeSymbolSize: 10,
+            force: {
+                repulsion: 200,
+                edgeLength: 120
+            },
+            lineStyle: {
+                normal: {
+                    width: 1,
+                    curveness: 0.1,
+                    opacity:0.8,
+                    color: function (params) {
+                        // 引入params
+                        // 根据链路拥塞情况设置不同的颜色
+                        var value = params.value;
+                        if (value > 80) {
+                            return 'red';
+                        } else if (value > 50) {
+                            return 'orange';
+                        } else {
+                            return 'green';
+                        }
+                    }
+                },
+
+                emphasis:{
+                    width: 2,
+                    curveness: 0.1
+                },
+                animation: true,
+                animationDuration: 2000,
+                animationEasing: 'quadraticOut',
+                animationDelay: 0,
+                progressiveThreshold: 500,
+                progressive: 200,
+                animationUpdate: true
+            }
+        }]
+    };
+
+    // 将option设置给Echarts实例
+    myChart.setOption(option);
+
+</script>
+</body>
+</html>

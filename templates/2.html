@@ -1,0 +1,1840 @@
+
+
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <script src="echarts.js"></script>
+    <script src="https://s3.pstatp.com/cdn/expire-1-M/jquery/3.3.1/jquery.min.js"></script>
+    <head>
+	<link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/element-plus/2.0.4/index.min.css" />
+	<link rel="stylesheet" href="https://ks3-cn-beijing.ksyun.com/vform3/render.style.css?t=20220129">
+        <meta charset="UTF-8">
+        <title>MAIN链路展示</title>
+        <style type="text/css">
+            *{
+                margin: 0;
+                padding: 0;
+            }
+            .main{
+                width: 100%;
+                height: 100%;
+                position: absolute;
+            }
+            .quarter-div{
+                width:50%;
+                height: 50%;
+                float: left;
+            }
+            .blue{
+                background-color:  rgb(255, 255, 255);
+            }
+            .green{
+                background-color: rgb(255, 255, 255);
+            }
+            .orange{
+                background-color:  rgb(255, 255, 255);
+            }
+            .yellow{
+                background-color:  rgb(255, 255, 255);
+            
+            }
+            .main{
+                background-color:  rgb(255, 255, 255);
+            
+            }
+
+             /* 测试发包区域 */
+        label {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+
+        /* input:range */
+
+        select,
+        input[type="text"],
+        textarea {
+            display: block;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            width: 100%;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            box-sizing: border-box;
+        }
+
+        select:focus,
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.25rem #007bff;
+            border-color: #007bff;
+        }
+
+        hr {
+            margin: 1rem 0;
+            border: 0;
+            border-top: 1px solid #ced4da;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1rem;
+            border: 1px solid #ced4da;
+        }
+
+        th,
+        td {
+            padding: 0.75rem;
+            text-align: center;
+            border: 1px solid #ced4da;
+        }
+
+        /* button */
+
+        button {
+            background-color: #fff;
+            border: 2px solid #2a8bf2;
+            color: #2a8bf2;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2a8bf2;
+            color: #fff;
+        }
+        </style>
+    </head>
+    <body>
+      <div class="main">
+        <div class="quarter-div blue">
+          <!-- <h3>拓扑结构图</h3>
+          <div style="width: 400px;height:200px;"><img src="1.jpg" width="600" style="margin:35px 25px 25px 30px;"></div> -->
+
+          <div id="topology" style="width: 800px;height:600px;"></div>
+
+        </div>
+        <div class="quarter-div yellow">
+            <div id="chart1" style="height: 400px;"></div>
+            <div id="chart2" style="height: 400px;"></div>
+            <div id="chart112" style="height: 400px;"></div>
+          </div>
+          <div class="quarter-div green">
+            <table>
+                <thead>
+                    <tr>
+                        <th>源主机</th>
+                        <th>目的主机</th>
+                        <th>发包速率</th>
+                        <th>确定发包</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>h1</td>
+                        <td>
+                            <input id="input1" type="text" value="h2">
+                            <!-- <select>
+                                <option value="placeholder" disabled selected style="display:none">请选择目的主机</option>
+                                <option value="h2">h2</option>
+                                <option value="h3">h3</option>
+                            </select> -->
+                        </td>
+                        <td>
+                            <input id="input1_1" type="text" value="10M">
+                        </td>
+                        <td>
+                            <button id="button1">发包</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>h2</td>
+                        <td>
+                            <input id="input2" type="text" placeholder="请输入目的主机，如h2">
+                            <!-- <select>
+                                <option value="placeholder" disabled selected style="display:none">请选择目的主机</option>
+                                <option value="h1">h1</option>
+                                <option value="h3">h3</option>
+                            </select> -->
+                        </td>
+                        <td>
+                            <input id="input2_1" type="text" placeholder="请输入发包速率（Mp/s）">
+                            <!-- <input id="range2" type="range" min="0" max="100" value="0" step="1"
+                                oninput="change('range2', 'value2')" onchange="change('range2', 'value2')">
+                            <span id="value2" style="display: inline-block; width: 30px;">0</span> -->
+                        </td>
+                        <td>
+                            <button id="button2">发包</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>h3</td>
+                        <td>
+                            <input id="input3" type="text" placeholder="请输入目的主机，如h2">
+                            <!-- <select>
+                                <option value="placeholder" disabled selected style="display:none">请选择目的主机</option>
+                                <option value="h1">h1</option>
+                                <option value="h2">h2</option>
+                            <
+                            /select> -->
+                        </td>
+                        <td>
+                            <input id="input3_1" type="text" placeholder="请输入发包速率（Mp/s）">
+                            <!-- <input id="range3" type="range" min="0" max="100" value="0" step="1"
+                                oninput="change('range3', 'value3')" onchange="change('range3', 'value3')">
+                            <span id="value3" style="display: inline-block; width: 30px;">0</span> -->
+                        </td>
+                        <td>
+                            <button id="button3">发包</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        
+
+        
+      </div>
+    </body>
+
+<script>
+var link1=[];
+
+
+   
+</script>
+<!-- chatgpt： 引入 Echarts 库，可以通过 CDN 或本地文件进行引入。例如，可以在 HTML 文件中添加以下代码-->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+
+
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/3.2.30/vue.global.min.js"></script>
+<script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/element-plus/2.0.4/index.full.min.js"></script>
+<script src="https://ks3-cn-beijing.ksyun.com/vform3/render.umd.js?t=20220129"></script>
+
+<!-- 发包测试 -->
+<script>
+  const { createApp } = Vue;
+	const app = createApp({
+      data() {
+        return {
+          formJson: {
+            "widgetList": [
+            {
+                "type": "static-text",
+                "icon": "static-text",
+                "formItemFlag": false,
+                "options": {
+                    "name": "statictext111193",
+                    "columnWidth": "200px",
+                    "hidden": false,
+                    "customClass": [],
+                    "onCreated": "",
+                    "onMounted": "",
+                    "label": "static-text"
+                },
+                "id": "statictext111193"
+            },
+            {
+                "type": "divider",
+                "icon": "divider",
+                "formItemFlag": false,
+                "options": {
+                    "name": "divider102346",
+                    "label": "",
+                    "columnWidth": "200px",
+                    "direction": "horizontal",
+                    "contentPosition": "center",
+                    "hidden": false,
+                    "customClass": [],
+                    "onCreated": "",
+                    "onMounted": ""
+                },
+                "id": "divider102346"
+            },
+            {
+            "type": "card",
+            "category": "container",
+            "icon": "card",
+            "widgetList": [
+                {
+                    "key": 29796,
+                    "type": "table",
+                    "category": "container",
+                    "icon": "table",
+                    "rows": [
+                        {
+                            "cols": [
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 50006,
+                                            "type": "static-text",
+                                            "icon": "static-text",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "statictext1",
+                                                "columnWidth": "200px",
+                                                "hidden": false,
+                                                "textContent": "源主机",
+                                                "textAlign": "center",
+                                                "fontSize": "13px",
+                                                "preWrap": false,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "label": "static-text"
+                                            },
+                                            "id": "statictext84025"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-1",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-111969"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 50006,
+                                            "type": "static-text",
+                                            "icon": "static-text",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "statictext2",
+                                                "columnWidth": "200px",
+                                                "hidden": false,
+                                                "textContent": "目的主机",
+                                                "textAlign": "center",
+                                                "fontSize": "13px",
+                                                "preWrap": false,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "label": "static-text"
+                                            },
+                                            "id": "statictext110568"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-2",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-90540"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 50006,
+                                            "type": "static-text",
+                                            "icon": "static-text",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "statictext3",
+                                                "columnWidth": "200px",
+                                                "hidden": false,
+                                                "textContent": "发包速率",
+                                                "textAlign": "center",
+                                                "fontSize": "13px",
+                                                "preWrap": false,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "label": "static-text"
+                                            },
+                                            "id": "statictext117497"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-3",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-72452"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 50006,
+                                            "type": "static-text",
+                                            "icon": "static-text",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "statictext4",
+                                                "columnWidth": "150px",
+                                                "hidden": false,
+                                                "textContent": "确定发包",
+                                                "textAlign": "center",
+                                                "fontSize": "13px",
+                                                "preWrap": false,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "label": "static-text"
+                                            },
+                                            "id": "statictext115786"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-4",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-54902"
+                                }
+                            ],
+                            "id": "table-row-70267",
+                            "merged": false
+                        },
+                        {
+                            "cols": [
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 50006,
+                                            "type": "static-text",
+                                            "icon": "static-text",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "statictext11",
+                                                "columnWidth": "200px",
+                                                "hidden": false,
+                                                "textContent": "h1",
+                                                "textAlign": "center",
+                                                "fontSize": "13px",
+                                                "preWrap": false,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "label": "static-text"
+                                            },
+                                            "id": "statictext64260"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-11",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-30218"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 96669,
+                                            "type": "select",
+                                            "icon": "select-field",
+                                            "formItemFlag": true,
+                                            "options": {
+                                                "name": "select106758",
+                                                "label": "",
+                                                "labelAlign": "label-left-align",
+                                                "defaultValue": "",
+                                                "placeholder": "",
+                                                "columnWidth": "200px",
+                                                "size": "",
+                                                "labelWidth": null,
+                                                "labelHidden": true,
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "clearable": true,
+                                                "filterable": false,
+                                                "allowCreate": false,
+                                                "remote": false,
+                                                "automaticDropdown": false,
+                                                "multiple": false,
+                                                "multipleLimit": 0,
+                                                "optionItems": [
+                                                    {
+                                                        "label": "h2",
+                                                        "value": 1
+                                                    },
+                                                    {
+                                                        "label": "h3",
+                                                        "value": 2
+                                                    }
+                                                ],
+                                                "required": false,
+                                                "requiredHint": "",
+                                                "validation": "",
+                                                "validationHint": "",
+                                                "customClass": [],
+                                                "labelIconClass": null,
+                                                "labelIconPosition": "rear",
+                                                "labelTooltip": null,
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onRemoteQuery": "",
+                                                "onChange": "",
+                                                "onFocus": "",
+                                                "onBlur": "",
+                                                "onValidate": ""
+                                            },
+                                            "id": "select106758"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-21",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-25987"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 101314,
+                                            "type": "slider",
+                                            "icon": "slider-field",
+                                            "formItemFlag": true,
+                                            "options": {
+                                                "name": "slider1",
+                                                "label": "slider",
+                                                "labelAlign": "",
+                                                "columnWidth": "200px",
+                                                "showStops": true,
+                                                "size": "",
+                                                "labelWidth": null,
+                                                "labelHidden": true,
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "required": false,
+                                                "requiredHint": "",
+                                                "validation": "",
+                                                "validationHint": "",
+                                                "customClass": [],
+                                                "labelIconClass": null,
+                                                "labelIconPosition": "rear",
+                                                "labelTooltip": null,
+                                                "min": 0,
+                                                "max": 100,
+                                                "step": 10,
+                                                "range": false,
+                                                "height": null,
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onChange": "",
+                                                "onValidate": ""
+                                            },
+                                            "id": "slider28183"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-31",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-109390"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 80050,
+                                            "type": "button",
+                                            "icon": "button",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "button46169",
+                                                "label": "发包",
+                                                "columnWidth": "200px",
+                                                "size": "",
+                                                "displayStyle": "inline",
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "type": "",
+                                                "plain": false,
+                                                "round": false,
+                                                "circle": false,
+                                                "icon": null,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onClick": ""
+                                            },
+                                            "id": "button46169"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-41",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-7751"
+                                }
+                            ],
+                            "id": "table-row-15700",
+                            "merged": false
+                        },
+                        {
+                            "cols": [
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 50006,
+                                            "type": "static-text",
+                                            "icon": "static-text",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "statictext12",
+                                                "columnWidth": "200px",
+                                                "hidden": false,
+                                                "textContent": "h2",
+                                                "textAlign": "center",
+                                                "fontSize": "13px",
+                                                "preWrap": false,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "label": "static-text"
+                                            },
+                                            "id": "statictext19132"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-12",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-108879"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 96669,
+                                            "type": "select",
+                                            "icon": "select-field",
+                                            "formItemFlag": true,
+                                            "options": {
+                                                "name": "select43995",
+                                                "label": "select",
+                                                "labelAlign": "",
+                                                "defaultValue": "",
+                                                "placeholder": "",
+                                                "columnWidth": "200px",
+                                                "size": "",
+                                                "labelWidth": null,
+                                                "labelHidden": true,
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "clearable": true,
+                                                "filterable": false,
+                                                "allowCreate": false,
+                                                "remote": false,
+                                                "automaticDropdown": false,
+                                                "multiple": false,
+                                                "multipleLimit": 0,
+                                                "optionItems": [
+                                                    {
+                                                        "label": "h1",
+                                                        "value": 1
+                                                    },
+                                                    {
+                                                        "label": "h3",
+                                                        "value": 2
+                                                    }
+                                                ],
+                                                "required": false,
+                                                "requiredHint": "",
+                                                "validation": "",
+                                                "validationHint": "",
+                                                "customClass": [],
+                                                "labelIconClass": null,
+                                                "labelIconPosition": "rear",
+                                                "labelTooltip": null,
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onRemoteQuery": "",
+                                                "onChange": "",
+                                                "onFocus": "",
+                                                "onBlur": "",
+                                                "onValidate": ""
+                                            },
+                                            "id": "select43995"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-22",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-18121"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 101314,
+                                            "type": "slider",
+                                            "icon": "slider-field",
+                                            "formItemFlag": true,
+                                            "options": {
+                                                "name": "slider2",
+                                                "label": "slider",
+                                                "labelAlign": "",
+                                                "columnWidth": "200px",
+                                                "showStops": true,
+                                                "size": "",
+                                                "labelWidth": null,
+                                                "labelHidden": true,
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "required": false,
+                                                "requiredHint": "",
+                                                "validation": "",
+                                                "validationHint": "",
+                                                "customClass": [],
+                                                "labelIconClass": null,
+                                                "labelIconPosition": "rear",
+                                                "labelTooltip": null,
+                                                "min": 0,
+                                                "max": 100,
+                                                "step": 10,
+                                                "range": false,
+                                                "height": null,
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onChange": "",
+                                                "onValidate": ""
+                                            },
+                                            "id": "slider42499"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-89662",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-89662"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 80050,
+                                            "type": "button",
+                                            "icon": "button",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "button43080",
+                                                "label": "发包",
+                                                "columnWidth": "200px",
+                                                "size": "",
+                                                "displayStyle": "inline",
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "type": "",
+                                                "plain": false,
+                                                "round": false,
+                                                "circle": false,
+                                                "icon": null,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onClick": ""
+                                            },
+                                            "id": "button43080"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-42",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-81922"
+                                }
+                            ],
+                            "id": "table-row-117726",
+                            "merged": false
+                        },
+                        {
+                            "cols": [
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 50006,
+                                            "type": "static-text",
+                                            "icon": "static-text",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "statictext13",
+                                                "columnWidth": "200px",
+                                                "hidden": false,
+                                                "textContent": "h3",
+                                                "textAlign": "center",
+                                                "fontSize": "13px",
+                                                "preWrap": false,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "label": "static-text"
+                                            },
+                                            "id": "statictext33642"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-13",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-25966"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 96669,
+                                            "type": "select",
+                                            "icon": "select-field",
+                                            "formItemFlag": true,
+                                            "options": {
+                                                "name": "select55516",
+                                                "label": "select",
+                                                "labelAlign": "",
+                                                "defaultValue": "",
+                                                "placeholder": "",
+                                                "columnWidth": "200px",
+                                                "size": "",
+                                                "labelWidth": null,
+                                                "labelHidden": true,
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "clearable": true,
+                                                "filterable": false,
+                                                "allowCreate": false,
+                                                "remote": false,
+                                                "automaticDropdown": false,
+                                                "multiple": false,
+                                                "multipleLimit": 0,
+                                                "optionItems": [
+                                                    {
+                                                        "label": "h2",
+                                                        "value": 1
+                                                    },
+                                                    {
+                                                        "label": "h3",
+                                                        "value": 2
+                                                    }
+                                                ],
+                                                "required": false,
+                                                "requiredHint": "",
+                                                "validation": "",
+                                                "validationHint": "",
+                                                "customClass": [],
+                                                "labelIconClass": null,
+                                                "labelIconPosition": "rear",
+                                                "labelTooltip": null,
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onRemoteQuery": "",
+                                                "onChange": "",
+                                                "onFocus": "",
+                                                "onBlur": "",
+                                                "onValidate": ""
+                                            },
+                                            "id": "select55516"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-23",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-28418"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 101314,
+                                            "type": "slider",
+                                            "icon": "slider-field",
+                                            "formItemFlag": true,
+                                            "options": {
+                                                "name": "slider3",
+                                                "label": "slider",
+                                                "labelAlign": "",
+                                                "columnWidth": "200px",
+                                                "showStops": true,
+                                                "size": "",
+                                                "labelWidth": null,
+                                                "labelHidden": true,
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "required": false,
+                                                "requiredHint": "",
+                                                "validation": "",
+                                                "validationHint": "",
+                                                "customClass": [],
+                                                "labelIconClass": null,
+                                                "labelIconPosition": "rear",
+                                                "labelTooltip": null,
+                                                "min": 0,
+                                                "max": 100,
+                                                "step": 10,
+                                                "range": false,
+                                                "height": null,
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onChange": "",
+                                                "onValidate": ""
+                                            },
+                                            "id": "slider77289"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-99614",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-99614"
+                                },
+                                {
+                                    "type": "table-cell",
+                                    "category": "container",
+                                    "icon": "table-cell",
+                                    "internal": true,
+                                    "widgetList": [
+                                        {
+                                            "key": 80050,
+                                            "type": "button",
+                                            "icon": "button",
+                                            "formItemFlag": false,
+                                            "options": {
+                                                "name": "button27158",
+                                                "label": "发包",
+                                                "columnWidth": "200px",
+                                                "size": "",
+                                                "displayStyle": "inline",
+                                                "disabled": false,
+                                                "hidden": false,
+                                                "type": "",
+                                                "plain": false,
+                                                "round": false,
+                                                "circle": false,
+                                                "icon": null,
+                                                "customClass": [],
+                                                "onCreated": "",
+                                                "onMounted": "",
+                                                "onClick": ""
+                                            },
+                                            "id": "button27158"
+                                        }
+                                    ],
+                                    "merged": false,
+                                    "options": {
+                                        "name": "table-cell-43",
+                                        "cellWidth": "",
+                                        "cellHeight": "",
+                                        "colspan": 1,
+                                        "rowspan": 1,
+                                        "wordBreak": false,
+                                        "customClass": []
+                                    },
+                                    "id": "table-cell-38805"
+                                }
+                            ],
+                            "id": "table-row-15340",
+                            "merged": false
+                        }
+                    ],
+                    "options": {
+                        "name": "table101143",
+                        "hidden": false,
+                        "customClass": []
+                    },
+                    "id": "table101143"
+                }
+            ],
+            "options": {
+                "name": "card28639",
+                "label": "发包测试",
+                "hidden": false,
+                "folded": false,
+                "showFold": false,
+                "cardWidth": "100%",
+                "shadow": "never",
+                "customClass": []
+            },
+            "id": "card28639"
+        }
+            ],
+            "formConfig": {
+          "modelName": "formData",
+          "refName": "vForm",
+          "rulesName": "rules",
+          "labelWidth": 50,
+          "labelPosition": "left",
+          "size": "",
+          "labelAlign": "label-center-align",
+          "cssCode": "",
+          "customClass": [],
+          "functions": "",
+          "layoutType": "PC",
+          "jsonVersion": 3,
+          "onFormCreated": "",
+          "onFormMounted": "",
+          "onFormDataChange": ""
+          }
+          },
+          formData: {},
+          optionData: {}
+        }
+      }
+      // ,
+      // methods: {
+      //   submitForm() {
+      //     this.$refs.vFormRef.getFormData().then( (formData) => {
+      //       // Form Validation OK
+      //       alert( JSON.stringify(formData) )
+      //     }).catch( function(error) {
+      //       // Form Validation Failed
+      //       alert(error)
+      //     })
+      //   }
+      // }
+	});
+	app.use(ElementPlus)
+	app.use(VFormRender)
+	app.mount("#app");
+</script>
+
+<!-- 其余图表 -->
+<script>
+  // 初始化第一个图表
+  var chart1 = echarts.init(document.getElementById('chart1'));
+
+  // 设置第一个图表的配置项和数据
+  var option1 = {
+    title: {
+      text: '链路1流量情况'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        animation: false
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: [] // x轴数据
+    },
+    yAxis: {
+      type: 'value',
+      max: 10 // y轴最大值
+    },
+    series: [{
+      name: '链路1',
+      type: 'line',
+      data: [], // 数据
+      animation: false,
+      itemStyle: {
+        normal: {
+          color: 'blue'
+        }
+      }
+    }]
+  };
+
+  // 使用刚指定的配置项和数据显示第一个图表。
+  chart1.setOption(option1);
+
+  // 初始化第二个图表
+  var chart2 = echarts.init(document.getElementById('chart2'));
+
+  // 设置第二个图表的配置项和数据
+  var option2 = {
+    title: {
+      text: '链路2流量情况'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        animation: false
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: [] // x轴数据
+    },
+    yAxis: {
+      type: 'value',
+      max: 10 // y轴最大值
+    },
+    series: [{
+      name: '链路2',
+      type: 'line',
+      data: [], // 数据
+      animation: false,
+      itemStyle: {
+        normal: {
+          color: 'red'
+        }
+      }
+    }]
+  };
+
+  // 使用刚指定的配置项和数据显示第二个图表。
+  chart2.setOption(option2);
+
+
+
+
+ var chart112 = echarts.init(document.getElementById('chart112'));
+
+  // 设置第一个图表的配置项和数据
+  var option112 = {
+    title: {
+      text: '链路3流量情况'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        animation: false
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: [] // x轴数据
+    },
+    yAxis: {
+      type: 'value',
+      max: 10 // y轴最大值
+    },
+    series: [{
+      name: '链路3',
+      type: 'line',
+      data: [], // 数据
+      animation: false,
+      itemStyle: {
+        normal: {
+          color: 'blue'
+        }
+      }
+    }]
+  };
+
+  // 使用刚指定的配置项和数据显示第一个图表。
+  chart112.setOption(option112);
+
+
+  // 模拟数据更新
+  var data6 = []; // 链路1数据数组
+  var data7= []; // 链路2数据数组
+  var data8= []; // 链路2数据数组
+  var xData = []; // x轴数据数组
+  var maxDataPoints = 10; // 最大数据点数
+  var dataIndex = 0;
+
+
+
+                $(function(){
+                    
+                　　// test 的点击事件
+                　　$("#button1").click(function(){
+                    var input1= document.getElementById('input1').value;
+  var input1_1= document.getElementById('input1_1').value;
+  var input2= document.getElementById("input2").value;
+  var input2_1= document.getElementById("input2_1").value;
+  var input3= document.getElementById("input3").value;
+  var input3_1= document.getElementById("input3_1").value;
+                    　　　　  $.ajax({
+                url: '/send_test',
+                data: {
+                    1: 'h1',
+                    2: input1,
+                    3: input1_1
+                },
+                type: 'GET',
+                //响应体类型:
+                dataType: 'json',
+                success: function(data) {
+                    link1=data;
+                },
+                //失败的回调
+                error: function() {
+                    console.log("出错了");
+                },
+                //超时时间
+                timeout: 2000,
+                //头信息
+            })
+                　　});
+                                
+                　　// 调用 test 的点击事件的两种方法
+                　　 $("#test").trigger("click");
+                　　 $("#test").click()
+                })
+
+
+                $(function(){
+                    
+                　　// test 的点击事件
+                　　$("#button2").click(function(){
+                    var input1= document.getElementById("input1").value;
+  var input1_1= document.getElementById("input1_1").value;
+  var input2= document.getElementById("input2").value;
+  var input2_1= document.getElementById("input2_1").value;
+  var input3= document.getElementById("input3").value;
+  var input3_1= document.getElementById("input3_1").value;
+                    　　　　  $.ajax({
+                url: '/send_test',
+                data: {
+                    1: 'h2',
+                    2: input2,
+                    3: input2_1
+                },
+                type: 'GET',
+                //响应体类型:
+                dataType: 'json',
+                success: function(data) {
+                    link1=data;
+                },
+                //失败的回调
+                error: function() {
+                    console.log("出错了");
+                },
+                //超时时间
+                timeout: 2000,
+                //头信息
+            })
+                　　});
+                                
+                　　// 调用 test 的点击事件的两种方法
+                　　 $("#test").trigger("click");
+                　　 $("#test").click()
+                })
+  
+                $(function(){
+                    
+                　　// test 的点击事件
+                　　$("#button3").click(function(){
+                    var input1= document.getElementById("input1").value;
+  var input1_1= document.getElementById("input1_1").value;
+  var input2= document.getElementById("input2").value;
+  var input2_1= document.getElementById("input2_1").value;
+  var input3= document.getElementById("input3").value;
+  var input3_1= document.getElementById("input3_1").value;
+                    　　　　  $.ajax({
+                url: '/send_test',
+                data: {
+                    1: 'h3',
+                    2: input3,
+                    3: input3_1
+                },
+                type: 'GET',
+                //响应体类型:
+                dataType: 'json',
+                success: function(data) {
+                    link1=data;
+                },
+                //失败的回调
+                error: function() {
+                    console.log("出错了");
+                },
+                //超时时间
+                timeout: 2000,
+                //头信息
+            })
+                　　});
+                                
+                　　// 调用 test 的点击事件的两种方法
+                　　 $("#test").trigger("click");
+                　　 $("#test").click()
+                })
+  
+                function updateData() {
+    // 模拟数据更新
+    $.ajax({
+                url: '/send_ecn',
+                data: {
+                    a: 100,
+                    b: 20
+                },
+                type: 'GET',
+                //响应体类型:
+                dataType: 'json',
+                success: function(data) {
+                    alert(data);
+                },
+                //失败的回调
+                error: function() {
+                    console.log("出错了");
+                },
+                //超时时间
+                timeout: 2000,
+                //头信息
+            })
+    $.ajax({
+                url: '/send_bage',
+                data: {
+                    a: 100,
+                    b: 20
+                },
+                type: 'GET',
+                //响应体类型:
+                dataType: 'json',
+                success: function(data) {
+                    link1=data;
+                },
+                //失败的回调
+                error: function() {
+                    console.log("出错了");
+                },
+                //超时时间
+                timeout: 2000,
+                //头信息
+            })
+    var newData1 = link1[0];
+    data6.push(newData1);
+    if (data6.length > maxDataPoints) {
+      data6.shift();
+    }
+
+    var newData2 = link1[1];
+    data7.push(newData2);
+    if (data7.length > maxDataPoints) {
+      data7.shift();
+    }
+    var newData3 =link1[2];
+    data8.push(newData3);
+    if (data8.length > maxDataPoints) {
+      data8.shift();
+    }
+    // 更新x轴数据
+    var now = new Date();
+    var timeString = [now.getHours(), now.getMinutes(), now.getSeconds()].map((n)=> n < 10 ? "0" + n : n).join(":");
+xData.push(timeString);
+if (xData.length > maxDataPoints) {
+  xData.shift();
+}
+
+// 更新图表
+chart1.setOption({
+  xAxis: {
+    data: xData
+  },
+  series: [{
+    data: data6
+  }]
+});
+
+chart2.setOption({
+  xAxis: {
+    data: xData
+  },
+  series: [{
+    data: data7
+  }]
+});
+chart112.setOption({
+  xAxis: {
+    data: xData
+  },
+  series: [{
+    data: data8
+  }]
+});
+// 每隔一段时间更新一次数据
+dataIndex++;
+
+  setTimeout(updateData, 1000);
+
+}
+
+// 开始模拟数据更新
+updateData();
+
+
+
+
+
+
+
+// var chart3= echarts.init(document.getElementById('chart3'));
+        var chart4 = echarts.init(document.getElementById('chart4'));
+    //    var chart5 = echarts.init(document.getElementById('chart5'));
+
+        // 数据
+        var data1 = {
+            categories: ['Host1', 'Host2', 'Host3'],
+            values: [80, 90, 70]
+        };
+        var data2 = {
+            categories: ['Switch1', 'Switch2', 'Switch3'],
+            values: [60, 70, 80]
+        };
+        var data3 = {
+            categories: ['Port1', 'Port2', 'Port3'],
+            values: [50, 60, 70]
+        };
+
+
+        var option4= {
+            title: {
+                text: 'Switch Status'
+            },
+            tooltip: {},
+            xAxis: {
+                data: data2.categories
+            },
+            yAxis: {},
+            series: [{
+                name: '1',
+                type: 'bar',
+                data: data2.values
+            }, {
+                name: '2',
+                type: 'bar',
+                data: [10, 5, 20]
+            }, {
+                name: '3',
+                type: 'bar',
+                data: [15, 20, 30]
+            }]
+        };
+
+
+
+
+    chart4.setOption(option4);
+
+
+// var nodes = [
+//   { id: 'host1', type: 'host' },
+//   { id: 'host2', type: 'host' },
+//   { id: 'host3', type: 'host' },
+//   { id: 'host4', type: 'host' },
+//   { id: 'host5', type: 'host' },
+//   { id: 'host6', type: 'host' },
+//   { id: 'switch1', type: 'switch' },
+//   { id: 'switch2', type: 'switch' },
+//   { id: 'switch3', type: 'switch' }
+// ];
+
+// var links = [
+//   { source: 'host1', target: 'switch1', port: 'eth0' },
+//   { source: 'host2', target: 'switch1', port: 'eth1' },
+//   { source: 'switch1', target: 'switch2', port1: 'eth2', port2: 'eth3' },
+//   { source: 'host3', target: 'switch2', port: 'eth0' },
+//   { source: 'host4', target: 'switch2', port: 'eth1' },
+//   { source: 'switch2', target: 'switch3', port1: 'eth2', port2: 'eth3' },
+//   { source: 'host5', target: 'switch3', port: 'eth0' },
+//   { source: 'host6', target: 'switch3', port: 'eth1' }
+// ];
+
+// option = {
+//     title: {
+//       text: '网络拓扑图'
+//     },
+//   series: {
+
+//     type: 'graph',
+//     nodes: nodes,
+//     links: links,
+//     edgeSymbol: ['none', 'arrow'],
+//     edgeSymbolSize: [0, 10],
+//     layout: 'force',
+//     force: {
+//       repulsion: 100,
+//       edgeLength: 50
+//     },
+//     itemStyle: {
+//       normal: {
+//         color: function (params) {
+//           if (params.data.type === 'host') {
+//             return '#c23531'; // 红色
+//           } else if (params.data.type === 'switch') {
+//             return '#2f4554'; // 绿色
+//           } else {
+//             return '#000'; // 黑色
+//           }
+//         }
+//       }
+//     }
+//   },
+//   legend: {
+//     data: ['Host', 'Switch'],
+//     orient: 'vertical',
+//     left: 'left'
+//   },
+//   tooltip: {
+//     trigger: 'item',
+//     formatter: function (params) {
+//       if (params.data.type === 'host') {
+//         return 'Host: ' + params.data.id + '<br/>' + 'Port: ' + params.data.port;
+//       } else if (params.data.type === 'switch') {
+//         return 'Switch: ' + params.data.id;
+//       } else {
+//         return params.data.id;
+//       }
+//     }
+//   }
+// };
+
+// var chart = echarts.init(document.getElementById('chart'));
+// chart.setOption(option);
+
+
+
+</script>
+
+<!-- 拓扑网络 -->
+
+
+<script type="text/javascript">
+  // 初始化Echarts实例
+  var myChart = echarts.init(document.getElementById('topology'));
+
+  // 拓扑图的节点和边数据
+  var nodes = [
+          {
+              id: "h1",
+              name:"h1",
+              category: 0,
+              draggable: true,
+              symbol : 'image://../static/images/icon/host.png',
+              symbolSize : 50
+          },
+          {
+              id: "h2",
+              name:"h2",
+              category: 0,
+              draggable: true,
+              symbol : 'image://../static/images/icon/host.png',
+              symbolSize : 50
+          },
+          {
+              id: "h3",
+              name:"h3",
+              category: 0,
+              draggable: true,
+              symbol : 'image://../static/images/icon/host.png',
+              symbolSize : 50
+          },
+          {
+              id: "s1",
+              name:"s1",
+              category: 1,
+              draggable: true,
+              symbol : 'image://../static/images/icon/switch.png',
+              symbolSize : 50
+          },
+          {
+              id: "s2",
+              name:"s2",
+              category: 1,
+              draggable: true,
+              symbol : 'image://../static/images/icon/switch.png',
+              symbolSize : 50
+          },
+          {
+              id: "s3",
+              name:"s3",
+              category: 1,
+              draggable: true,
+              symbol : 'image://../static/images/icon/switch.png',
+              symbolSize : 50
+          }
+      ];
+
+
+  /**
+   * 自定义图片
+   */
+  //  for (var i = 0;i < data.length;i++){
+  //     if (data[i].category == 0){
+  //         data[i].symbol = 'image://./images/icon/host.png';
+  //         // data[i].symbolSize = 70;
+  //     }
+  //     if (data[i].category == 1){
+  //         data[i].symbol = 'image://./images/icon/switch.png';
+  //     }
+  // }
+
+
+
+  var links = [
+      // s1-h1
+      {source: 's1', target: 'h1'},
+      // {source: 'h1', target: 's1'},
+
+      // s2-h2
+      {source: 's2', target: 'h2'},
+      // {source: 'h2', target: 's2'},
+
+      // s3-h3
+      {source: 's3', target: 'h3'},
+      // {source: 'h3', target: 's3'},
+
+      // s1-s2
+      {source: 's1', target: 's2'},
+      // {source: 's2', target: 's1'},
+
+      // s2-s3
+      {source: 's2', target: 's3'},
+      // {source: 's3', target: 's2'},
+
+      // s3-s1
+      {source: 's3', target: 's1'},
+      // {source: 's1', target: 's3'}
+  ];
+
+  // 拓扑图节点的类别，用于区分不同类型的节点
+  var categories = [
+      {name: "主机"},
+      {name: "端口"}
+  ];
+
+
+  // 设置Echarts的option
+  var option = {
+      title: {
+          text: '动态三角拓扑网络图'
+      },
+      tooltip: {},
+      legend: {
+          data: categories.map(function (a) {
+              return a.name;
+          })
+      },
+      series: [{
+          type: 'graph',
+          layout: 'force',
+          data: nodes,
+          links: links,
+          categories: categories,
+          roam: true, // 允许用户缩放和拖拽
+          draggable: true, // 开启节点拖拽
+          focusNodeAdjacency : true,
+          edgeSymbol: ['none', 'none'],
+          edgeSymbolSize: 10,
+          force: {
+              repulsion: 200,
+              edgeLength: 120
+          },
+          lineStyle: {
+              normal: {
+                  width: 1,
+                  curveness: 0.1,
+                  opacity:0.8,
+                  color: function (params) {
+                      // 引入params
+                      // 根据链路拥塞情况设置不同的颜色
+                      var value = params.value;
+                      if (value > 80) {
+                          return 'red';
+                      } else if (value > 50) {
+                          return 'orange';
+                      } else {
+                          return 'green';
+                      }
+                  }
+              },
+
+              emphasis:{
+                  width: 2,
+                  curveness: 0.1
+              },
+              animation: true,
+              animationDuration: 2000,
+              animationEasing: 'quadraticOut',
+              animationDelay: 0,
+              progressiveThreshold: 500,
+              progressive: 200,
+              animationUpdate: true
+          }
+      }]
+  };
+
+  // 将option设置给Echarts实例
+  myChart.setOption(option);
+
+</script>
+
+<!-- <script>
+
+    // 初始化拓扑图
+  var myChart = echarts.init(document.getElementById('topology'));
+
+    // 生成拓扑网络的数据和配置，包括交换机和终端的节点和连线
+  var data = {
+  nodes: [
+    {id: 's1', name: 'Switch 1', symbol: 'rect'},
+    {id: 's2', name: 'Switch 2', symbol: 'rect'},
+    {id: 's3', name: 'Switch 3', symbol: 'rect'},
+    {id: 't1', name: 'Terminal 1', symbol: 'circle'},
+    {id: 't2', name: 'Terminal 2', symbol: 'circle'},
+    {id: 't3', name: 'Terminal 2', symbol: 'circle'}
+  ],
+  links: [
+    {source: 's1', target: 't1'},
+    {source: 's2', target: 't2'},
+    {source: 's3', target: 't3'},
+    {source: 's1', target: 's2'},
+    {source: 's2', target: 't3'},
+    {source: 's3', target: 't1'}
+  ]
+};
+
+  var option = {
+  title: {text: 'Topology Network'},
+  series: [{
+    type: 'graph',
+    layout: 'none',
+    data: data.nodes,
+    links: data.links,
+    roam: true,
+    label: {
+      show: true
+    },
+    lineStyle: {
+      color: '#aaa'
+    }
+  }]
+};
+
+myChart.setOption(option);
+
+</script> -->
+
+    </html>
